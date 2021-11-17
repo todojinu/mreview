@@ -10,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @ToString
-@Table(name = "m_member")  //엔티티와 매핑할 테이블이 지정함
+@Table(name = "m_member")  //엔티티와 매핑할 테이블을 지정함
 public class Member {
 
     @Id
