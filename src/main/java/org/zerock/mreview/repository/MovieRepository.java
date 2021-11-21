@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.zerock.mreview.entity.Movie;
 
+import java.util.List;
+
 public interface MovieRepository extends JpaRepository<Movie, Long> {  //<엔티티타입, @Id타입>
 
     //두 개의 엔티티가 1:N 관계를 가지며 JPQL로 객체를 조회할 때 N+1 문제가 발생할 수 있다
@@ -29,6 +31,15 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {  //<엔티
             " and mi.inum = (select max(mi2.inum) from MovieImage mi2 where mi2.movie = m)" +
             " left outer join Review r on r.movie = m" +
             " group by m")
-    Page<Object[]> getListPage(Pageable pageable);
+    Page<Object[]> getListPage(Pageable pageable);  // 페이지 처리
+
+    @Query("select m, mi, avg(coalesce(r.grade, 0)), count(r)" +
+            " from Movie m" +
+            " left outer join MovieImage mi on mi.movie = m" +
+            " left outer join Review r on r.movie = m" +
+            " where m.mno = :mno" +
+            " group by m, mi"
+    )
+    List<Object[]> getMovieWithAll(Long mno);  // 특정 영화 조회
 
 }
